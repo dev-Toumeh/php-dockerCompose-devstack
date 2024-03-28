@@ -16,8 +16,11 @@ services:
       - ${APP_DEFAULT_PORT}
     volumes:
       - ./src:/var/www/html
+      - ./docker/httpd/conf/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini:ro        
     env_file:
       - docker/httpd/httpd.env
+    extra_hosts:
+      - host.docker.internal:host-gateway
 
   # Database
   db:
@@ -26,14 +29,13 @@ services:
     container_name: ${DB_CONTAINER_NAME}
     volumes:
       - db-volume:/var/lib/mysql
+      - ./docker/mysql/initdb.sql:/docker-entrypoint-initdb.d/initdb.sql
     ports:
       - ${DB_DEFAULT_PORT}
     restart: unless-stopped
     environment:
-      MARIADB_USER: ${MARIADB_USER}
-      MARIADB_PASSWORD: ${MARIADB_PASSWORD}
       MARIADB_DATABASE: ${MARIADB_DATABASE}
-      MARIADB_ROOT_PASSWORD: ${MARIADB_PASSWORD}
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
 
 volumes:
   db-volume:

@@ -23,7 +23,7 @@ RUN apt-get update \
 ## The following is based on typo3 System Requirements
 # Install typo3  nesseccery php extensions
 RUN set -eux; \
-   install-php-extensions pdo_mysql intl zip @composer gd exif
+   install-php-extensions pdo_mysql intl zip @composer gd exif xdebug
 
 # activate apache modules and vhost
 RUN a2enmod rewrite \
@@ -36,6 +36,10 @@ RUN groupadd -g ${GID} ${USERNAME} \
 
 # Enable the site
 RUN a2ensite mywebsite_vhost.conf
+
+
+ENV XDEBUG_MODE0=off
+COPY ./conf/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
 
 #  linking logs to stdout and stderr  NEED TO BE CHECKED
 #RUN ln -sfT /dev/stderr "/var/log/apache2/error.log" && \
